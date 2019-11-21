@@ -5,6 +5,7 @@ import com.recruit.githubrepositories.service.GHRepositoryService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +15,10 @@ import java.net.ConnectException;
 
 @RestController
 @RequestMapping("/repositories")
+@RequiredArgsConstructor
 public class ApiController {
 
-    private GHRepositoryService repositoryService;
-
-    public ApiController(GHRepositoryService repositoryService) {
-        this.repositoryService = repositoryService;
-    }
+    private final GHRepositoryService repositoryService;
 
     @ApiOperation("Get repository info")
     @ApiImplicitParams({
