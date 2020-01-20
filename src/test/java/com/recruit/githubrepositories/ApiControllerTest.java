@@ -9,9 +9,6 @@ import org.mockito.Mockito;
 import com.recruit.githubrepositories.api.ApiController;
 import com.recruit.githubrepositories.model.GHRepositoryMetadata;
 import com.recruit.githubrepositories.service.GHRepositoryService;
-import org.springframework.web.client.HttpClientErrorException;
-
-import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(JUnit4.class)
 class ApiControllerTest {

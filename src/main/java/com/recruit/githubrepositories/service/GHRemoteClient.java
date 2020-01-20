@@ -3,6 +3,7 @@ package com.recruit.githubrepositories.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -20,10 +21,10 @@ public class GHRemoteClient {
 	private String urlTemplate;
 
 	public GHRepositoryMetadata fetchFor(String user, String reponame) {
-	    log.debug(() -> String.format("Remote service url: %s", urlTemplate));
-		log.debug(() -> String.format("fetching remote service with params: user: %s, reponame: %s", user, reponame));
+	    log.debug(() -> String.format("[%s] Remote service url: %s", ThreadContext.get("id"), urlTemplate));
+		log.debug(() -> String.format("[%s] Fetching remote service with params: user: %s, reponame: %s", ThreadContext.get("id"), user, reponame));
 		JsonNode res = restTemplate.getForObject(urlTemplate, JsonNode.class, user, reponame);
-		log.debug(() -> String.format("Remote service responded wiht [%s]", res.toPrettyString()));
+		log.debug(() -> String.format("[%s] Remote service responded wiht [%s]", ThreadContext.get("id"), res.toPrettyString()));
 		return new GHRepositoryMetadata(
 				res.get("full_name").asText(),
 				res.get("description").asText(),

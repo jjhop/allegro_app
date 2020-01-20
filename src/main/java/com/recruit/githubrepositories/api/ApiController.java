@@ -2,15 +2,20 @@ package com.recruit.githubrepositories.api;
 
 import javax.json.Json;
 import java.net.ConnectException;
+import java.util.UUID;
+
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
+
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -43,33 +48,51 @@ public class ApiController {
     @GetMapping("/{owner}/{repositoryName}")
     public GHRepositoryMetadata get(@PathVariable String owner,
                                     @PathVariable String repositoryName) {
-        log.debug(() -> String.format("Calling /repositories/%s/%s", owner, repositoryName));
+        ThreadContext.put("id", UUID.randomUUID().toString());
+
+        log.error(() -> String.format("[" + ThreadContext.get("id") + "] Calling /repositories/%s/%s", owner, repositoryName));
         return repositoryService.fetchFor(owner, repositoryName);
     }
 
     @ExceptionHandler(HttpClientErrorException.NotFound.class)
     ResponseEntity<String> handleNotFound(Exception ex) {
-        log.warn("Repository or user not found.", ex);
+        log.warn("[" + ThreadContext.get("id") + "] Repository or user not found.");
         return ResponseEntity
                 .status(NOT_FOUND)
                 .contentType(APPLICATION_JSON)
                 .body(Json
                         .createObjectBuilder()
                         .add("errorMessage", "Repository or user not found.")
+                        .add("yourRequestId", ThreadContext.get("id"))
                         .build().toString()
                 );
     }
 
     @ExceptionHandler(ConnectException.class)
     ResponseEntity<String> handleConnectionError(Exception ex) {
-        log.error("Calling external service failed.", ex);
+        log.error("[" + ThreadContext.get("id") + "] Calling external service failed.");
         return ResponseEntity
                     .status(INTERNAL_SERVER_ERROR)
                     .contentType(APPLICATION_JSON)
                     .body(Json
                             .createObjectBuilder()
                             .add("errorMessage", "Remote connection error")
+                            .add("yourRequestId", ThreadContext.get("id"))
                             .build().toString()
                     );
+    }
+
+    @ExceptionHandler(HttpClientErrorException.Forbidden.class)
+    ResponseEntity<String> handleForbidden(Exception ex) {
+        log.warn("[" + ThreadContext.get("id") + "] Request forbidden.", ex.getMessage());
+        return ResponseEntity
+                .status(FORBIDDEN)
+                .contentType(APPLICATION_JSON)
+                .body(Json
+                        .createObjectBuilder()
+                        .add("errorMessage", "Remote connection error: request forbidden")
+                        .add("yourRequestId", ThreadContext.get("id"))
+                        .build().toString()
+                );
     }
 }
