@@ -1,21 +1,30 @@
 package com.recruit.githubrepositories.api;
 
-import com.recruit.githubrepositories.model.GHRepositoryMetadata;
-import com.recruit.githubrepositories.service.GHRepositoryService;
+import javax.json.Json;
+import java.net.ConnectException;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-import java.net.ConnectException;
+import com.recruit.githubrepositories.model.GHRepositoryMetadata;
+import com.recruit.githubrepositories.service.GHRepositoryService;
 
 @RestController
-@RequestMapping("/repositories")
+@RequestMapping(
+        value = "/repositories",
+        produces = MediaType.APPLICATION_JSON_VALUE
+)
 @RequiredArgsConstructor
+@Log4j2
 public class ApiController {
 
     private final GHRepositoryService repositoryService;
@@ -39,11 +48,25 @@ public class ApiController {
 
     @ExceptionHandler(HttpClientErrorException.NotFound.class)
     ResponseEntity<String> handleNotFound(Exception e) {
-        return new ResponseEntity<>("Repository or user not found", HttpStatus.NOT_FOUND);
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .contentType(APPLICATION_JSON)
+                .body(Json
+                        .createObjectBuilder()
+                        .add("errorMessage", "Repository or user not found")
+                        .build().toString()
+                );
     }
 
     @ExceptionHandler(ConnectException.class)
     ResponseEntity<String> handleConnectionError(Exception e) {
-        return new ResponseEntity<>("Remote connection error", HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity
+                    .status(INTERNAL_SERVER_ERROR)
+                    .contentType(APPLICATION_JSON)
+                    .body(Json
+                            .createObjectBuilder()
+                            .add("errorMessage", "Remote connection error")
+                            .build().toString()
+                    );
     }
 }
