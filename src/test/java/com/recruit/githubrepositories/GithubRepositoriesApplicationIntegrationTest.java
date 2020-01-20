@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringRunner.class)
 @AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class GithubRepositoriesApplicationTests {
+class GithubRepositoriesApplicationIntegrationTest {
 
 	@Autowired
     private TestRestTemplate template;

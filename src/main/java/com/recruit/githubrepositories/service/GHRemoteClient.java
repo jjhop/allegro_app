@@ -23,7 +23,7 @@ public class GHRemoteClient {
 	    log.debug(() -> String.format("Remote service url: %s", urlTemplate));
 		log.debug(() -> String.format("fetching remote service with params: user: %s, reponame: %s", user, reponame));
 		JsonNode res = restTemplate.getForObject(urlTemplate, JsonNode.class, user, reponame);
-		log.debug(() -> String.format("Remote service responded wiht [%s]",res.toPrettyString()));
+		log.debug(() -> String.format("Remote service responded wiht [%s]", res.toPrettyString()));
 		return new GHRepositoryMetadata(
 				res.get("full_name").asText(),
 				res.get("description").asText(),
