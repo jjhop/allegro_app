@@ -43,23 +43,26 @@ public class ApiController {
     @GetMapping("/{owner}/{repositoryName}")
     public GHRepositoryMetadata get(@PathVariable String owner,
                                     @PathVariable String repositoryName) {
+        log.debug(() -> String.format("Calling /repositories/%s/%s", owner, repositoryName));
         return repositoryService.fetchFor(owner, repositoryName);
     }
 
     @ExceptionHandler(HttpClientErrorException.NotFound.class)
-    ResponseEntity<String> handleNotFound(Exception e) {
+    ResponseEntity<String> handleNotFound(Exception ex) {
+        log.warn("Repository or user not found.", ex);
         return ResponseEntity
                 .status(NOT_FOUND)
                 .contentType(APPLICATION_JSON)
                 .body(Json
                         .createObjectBuilder()
-                        .add("errorMessage", "Repository or user not found")
+                        .add("errorMessage", "Repository or user not found.")
                         .build().toString()
                 );
     }
 
     @ExceptionHandler(ConnectException.class)
-    ResponseEntity<String> handleConnectionError(Exception e) {
+    ResponseEntity<String> handleConnectionError(Exception ex) {
+        log.error("Calling external service failed.", ex);
         return ResponseEntity
                     .status(INTERNAL_SERVER_ERROR)
                     .contentType(APPLICATION_JSON)
