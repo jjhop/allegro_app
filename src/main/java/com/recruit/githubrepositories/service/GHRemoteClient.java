@@ -14,16 +14,16 @@ import com.recruit.githubrepositories.model.GHRepositoryMetadata;
 @Log4j2
 public class GHRemoteClient {
 
-	private final RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-	@Value("${URL_TEMPLATE}")
-	private String urlTemplate;
+    @Value("${URL_TEMPLATE}")
+    private String urlTemplate;
 
-	public GHRepositoryMetadata fetchFor(String user, String reponame) {
-	    log.debug(() -> String.format("[%s] Remote service url: %s", ThreadContext.get("id"), urlTemplate));
-		log.debug(() -> String.format("[%s] Fetching remote service with params: user: %s, reponame: %s", ThreadContext.get("id"), user, reponame));
-		GHRepositoryMetadata res = restTemplate.getForObject(urlTemplate, GHRepositoryMetadata.class, user, reponame);
-		log.debug(() -> String.format("[%s] Remote service responded wiht [%s]", ThreadContext.get("id"), res));
-		return res;
-	}
+    public GHRepositoryMetadata fetchFor(String user, String reponame) {
+        log.debug(() -> String.format("[%s] Remote service url: %s", ThreadContext.get("id"), urlTemplate));
+        log.debug(() -> String.format("[%s] Fetching remote service with params: user: %s, reponame: %s", ThreadContext.get("id"), user, reponame));
+        GHRepositoryMetadata res = restTemplate.getForObject(urlTemplate, GHRepositoryMetadata.class, user, reponame);
+        log.debug(() -> String.format("[%s] Remote service responded wiht [%s]", ThreadContext.get("id"), res));
+        return res;
+    }
 }

@@ -27,9 +27,9 @@ class ApiControllerTest {
                 new GHRepositoryMetadata(faleFullName, fakeDesc, fakeURL, fakeStarsCount, fakeDate);
         GHRepositoryService serviceMock = Mockito.mock(GHRepositoryService.class);
         Mockito
-            .doReturn(fakeMetadata)
-            .when(serviceMock)
-            .fetchFor(fakeUser, fakeRepo);
+                .doReturn(fakeMetadata)
+                .when(serviceMock)
+                .fetchFor(fakeUser, fakeRepo);
 
         ApiController testedControler = new ApiController(serviceMock);
 

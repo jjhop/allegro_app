@@ -72,14 +72,14 @@ public class ApiController {
     ResponseEntity<String> handleConnectionError(Exception ex) {
         log.error("[" + ThreadContext.get("id") + "] Calling external service failed.");
         return ResponseEntity
-                    .status(INTERNAL_SERVER_ERROR)
-                    .contentType(APPLICATION_JSON)
-                    .body(Json
-                            .createObjectBuilder()
-                            .add("errorMessage", "Remote connection error")
-                            .add("yourRequestId", ThreadContext.get("id"))
-                            .build().toString()
-                    );
+                .status(INTERNAL_SERVER_ERROR)
+                .contentType(APPLICATION_JSON)
+                .body(Json
+                        .createObjectBuilder()
+                        .add("errorMessage", "Remote connection error")
+                        .add("yourRequestId", ThreadContext.get("id"))
+                        .build().toString()
+                );
     }
 
     @ExceptionHandler(HttpClientErrorException.Forbidden.class)

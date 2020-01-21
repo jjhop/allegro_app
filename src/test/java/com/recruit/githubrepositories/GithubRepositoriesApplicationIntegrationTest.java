@@ -20,12 +20,12 @@ import static org.junit.Assert.assertTrue;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class GithubRepositoriesApplicationIntegrationTest {
 
-	@Autowired
+    @Autowired
     private TestRestTemplate template;
 
-	@Test
-	void shouldReturnProperInfoAboutDmailRepo() {
-	    // when
+    @Test
+    void shouldReturnProperInfoAboutDmailRepo() {
+        // when
         ResponseEntity<GHRepositoryMetadata> response =
                 template.getForEntity("/repositories/{owner}/{repositoryName}", GHRepositoryMetadata.class, "jjhop", "dmail");
 
@@ -40,13 +40,13 @@ class GithubRepositoriesApplicationIntegrationTest {
         assertEquals("https://github.com/jjhop/dmail.git", responseBody.getCloneUrl());
         assertEquals(1, responseBody.getStars().longValue());
         assertEquals("2018-02-16T23:25:17Z", responseBody.getCreatedAt());
-	}
+    }
 
-	@Test
-	void shouldReturn404WhenTryingToGetInfoAboutNonexistingRepo() {
-	    String expectedResponseMessage = "Repository or user not found.";
+    @Test
+    void shouldReturn404WhenTryingToGetInfoAboutNonexistingRepo() {
+        String expectedResponseMessage = "Repository or user not found.";
 
-	    // testing for 'nonexistening' as repository name
+        // testing for 'nonexistening' as repository name
 
         ResponseEntity<JsonNode> response =
                 template.getForEntity("/repositories/{owner}/{repositoryName}", JsonNode.class, "jjhop", "nonexisting");
@@ -65,5 +65,5 @@ class GithubRepositoriesApplicationIntegrationTest {
         responseBody = response.getBody();
         assertEquals(expectedResponseMessage, responseBody.get("errorMessage").asText());
 
-	}
+    }
 }
