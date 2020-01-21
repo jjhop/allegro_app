@@ -1,6 +1,7 @@
 package com.recruit.githubrepositories;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.recruit.githubrepositories.model.GHRepositoryMetadata;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,20 +26,20 @@ class GithubRepositoriesApplicationIntegrationTest {
 	@Test
 	void shouldReturnProperInfoAboutDmailRepo() {
 	    // when
-        ResponseEntity<JsonNode> response =
-                template.getForEntity("/repositories/{owner}/{repositoryName}", JsonNode.class, "jjhop", "dmail");
+        ResponseEntity<GHRepositoryMetadata> response =
+                template.getForEntity("/repositories/{owner}/{repositoryName}", GHRepositoryMetadata.class, "jjhop", "dmail");
 
         // then
         assertTrue(response.getStatusCode().is2xxSuccessful());
         assertTrue(response.hasBody());
 
-        JsonNode responseBody = response.getBody();
+        GHRepositoryMetadata responseBody = response.getBody();
 
-        assertEquals("jjhop/dmail", responseBody.get("fullName").asText());
-        assertEquals("Desktop email client (clojure@jvm)", responseBody.get("description").asText());
-        assertEquals("https://github.com/jjhop/dmail.git", responseBody.get("cloneUrl").asText());
-        assertEquals(1, responseBody.get("stars").asInt());
-        assertEquals("2018-02-16T23:25:17Z", responseBody.get("createdAt").asText());
+        assertEquals("jjhop/dmail", responseBody.getFullName());
+        assertEquals("Desktop email client (clojure@jvm)", responseBody.getDescription());
+        assertEquals("https://github.com/jjhop/dmail.git", responseBody.getCloneUrl());
+        assertEquals(1, responseBody.getStars().longValue());
+        assertEquals("2018-02-16T23:25:17Z", responseBody.getCreatedAt());
 	}
 
 	@Test
