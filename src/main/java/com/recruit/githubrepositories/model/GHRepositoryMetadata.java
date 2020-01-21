@@ -1,16 +1,38 @@
 package com.recruit.githubrepositories.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class GHRepositoryMetadata {
 
-	private final String fullName;
-	private final String description;
-	private final String cloneUrl;
-	private final Long stars;
-	private final String createdAt;
+    @JsonProperty("full_name")
+    private String fullName;
 
+    @JsonProperty("description")
+    private String description;
+
+    @JsonProperty("clone_url")
+    private String cloneUrl;
+
+    @JsonProperty("stargazers_count")
+    private Long stars;
+
+    @JsonProperty("created_at")
+    private String createdAt;
+
+    @Override
+    public String toString() {
+        return "GHRepositoryMetadata{" +
+                "fullName='" + fullName +
+                ", description='" + description +
+                ", cloneUrl='" + cloneUrl +
+                ", stars=" + stars +
+                ", createdAt='" + createdAt +
+                '}';
+    }
 }
